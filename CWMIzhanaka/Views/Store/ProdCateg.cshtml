@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Store.ProductViewModel>
+
+@{
+    ViewBag.Title = ViewBag.CatName;
+}
+
+<h2>ViewBag.CatName</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImagePath)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var cat in Model) {
+    <tr>
+
+        <td>
+            @Html.DisplayFor(modelItem => cat.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => cat.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => cat.Price)
+        </td>
+        <td>
+            <a href="/Store/prod-detail/@cat.Slug"/>
+                <img src="/Images/Uploaded/ProductImages/@cat.ProductId/Thumbnails/@cat.ImagePath"/>
+        </td>
+        <td>
+            <a href="/Store/prod-detail/@cat.Slug"> Product Details </a>
+
+         
+        </td>
+    </tr>
+}
+
+</table>

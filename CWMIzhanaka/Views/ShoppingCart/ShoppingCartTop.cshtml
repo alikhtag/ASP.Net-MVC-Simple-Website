@@ -1,0 +1,7 @@
+﻿@model CWMIzhanaka.Models.ViewModels.Store.ShoppingCartViewModel
+
+<div class="csscart" style=" color:yellow">
+    You have: @Model.Quantity, Price: @Model.Price
+    <br />
+    @Html.ActionLink("Pay","Index", "ShoppingCart")
+</div>

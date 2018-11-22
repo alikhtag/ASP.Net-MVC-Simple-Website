@@ -1,0 +1,82 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Pages.PageViewModel>
+
+@{
+    ViewBag.Title = "Pages";
+}
+
+<h2>Pages</h2>
+
+<p>
+    @Html.ActionLink("Add New", "AddNewPage")
+</p>
+@if(!Model.Any())
+{
+     <h1> No Pages present</h1>
+} else
+{
+<table class="table sorting" id="pages">
+    <tr class="home">
+        <th>
+            Title
+        </th>
+        <th>
+            Slug
+        </th>
+        <th>
+           HasSidebar
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var page in Model) {
+    <tr id=" id_@page.Id" class="@page.Slug">
+        <td>
+            @Html.DisplayFor(modelItem => page.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => page.Slug)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => page.HasSidebar)
+        </td>
+        <td>
+            @Html.ActionLink("Edit Page", "EditPage", new { id= page.Id }) |
+            @Html.ActionLink("Details of Page", "DetailsPg", new { id= page.Id }) |
+            @if (page.Slug != "home")
+            {
+            @Html.ActionLink("Delete Page", "DelPage", new { id= page.Id }, new { @class = "delete" }  )
+            }
+        </td>
+    </tr>
+}
+
+</table>
+}
+
+@section Scripts {
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+        integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+        crossorigin="anonymous"></script>
+    <script>
+        //Asks to confirm to delete a page
+        $(function (){
+            $("a.delete").click(function() { 
+                if(!confirm("Delete the page?")) return false;
+            });
+        });
+
+        //Allows user to use mouse to sort pages to how they want
+        $("table#pages tbody").sortable({
+            itens: "tr:not(.home)",
+            placeholder: "highlight",
+            update: function () {
+                var id = $("table#pages tbody").sortable("serialize");
+                var url = "/Admin/Paging/Reorder"; 
+                $.post(url, id, function (data) {
+   
+                }); 
+            }
+        });
+    </script>
+    
+    }

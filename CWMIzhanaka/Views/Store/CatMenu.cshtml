@@ -1,0 +1,10 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Store.CategoriesViewModel>
+
+<h2>Categories</h2>
+
+<ul>
+    @foreach (var cat in Model)
+    {
+        <li><a href="/Store/ProdCateg/@cat.Slug.ToLower()">@cat.Name</a></li>
+    }
+</ul>

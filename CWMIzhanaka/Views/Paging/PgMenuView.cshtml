@@ -1,0 +1,23 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Pages.PageViewModel>
+
+@{ 
+    string title = (string)TempData["PgTitle"];
+        }
+
+@foreach (var pg in Model)
+{
+    if (title == pg.Title)
+    {
+        <li class="active">
+            <a href="/@pg.Slug"> @pg.Title</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a href="/@pg.Slug"> @pg.Title</a>
+        </li>
+    }
+}
+   
+

@@ -1,0 +1,196 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Store.CategoriesViewModel>
+
+@{
+    ViewBag.Title = "Categories";
+}
+
+<h2>Categories</h2>
+
+<div class="new-category">
+    <input type="text" id="new-category-name" />
+    <p>
+        <a href="#" id="new-category-namea"> New Category</a>
+        <span class="cat-text">
+            <img src="~/Content/Images/loading.gif" />
+        </span>
+    </p>
+</div>
+
+@if (!Model.Any())
+{
+    <h1> No Categories Found </h1>
+}
+else
+{
+    <table class="table sorting cat" id="pages">
+        <tr class="home">
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="id_@item.Id">
+                <td>
+                    <div class="jsDiv"></div>
+                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.EditorFor(modelItem => item.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DelCat", new { id = item.Id }, new { @class = "delete" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+            integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+            crossorigin="anonymous"></script>
+    <script>
+        /*
+        Scripts used to edit data in categories
+       */
+        var newCategorya = $("a#new-category-namea");
+        var categoryTextInput = $("#new-category-name");
+        var jsText = $("span.cat-text");
+        var table = $("table#pages tbody")
+        //if enter was pressed
+        categoryTextInput.keyup(function (e) {
+            if (e.keyCode == 13) {
+                newCategorya.click();
+            }
+
+        });
+        //Used to add new category
+        newCategorya.click(function (e) {
+            e.preventDefault();
+            // get the input from text box
+            var nameCat = categoryTextInput.val();
+            if (nameCat.length < 3) {
+                alert("Name must be at least 3 characters long")
+                return false;
+            }
+            jsText.show();
+
+            var url = "/admin/store/AddCat";
+            //used to check if category exists if not add the category
+            $.post(url, { nameCat: nameCat }, function (data) {
+
+                var call = data.trim();
+                if (call == "taken") {
+                    jsText.html("<span class= 'alert alert-danger'> Duplicate name, try again </span>");
+                    setTimeout(function () {
+                        jsText.fadeOut("fast", function () {
+                            jsText.Html("<img src = /Content/Images/loading.gif />")
+
+                        });
+                    }, 3000);
+                    return false;
+                } else {
+                    if (!$("table#pages").length) {
+                        location.reload();
+                    } else {
+                        jsText.html("<span class= 'alert alert-success'> Category added </span>");
+                        setTimeout(function () {
+                            jsText.fadeOut("fast", function () {
+                                jsText.Html("<img src =/Content/Images/loading.gif />")
+
+                            });
+                        }, 2000);
+                        categoryTextInput.val("");
+
+                        var change = $("table#pages tbody tr:last").clone();
+                        change.attr("id", "id_", + data);
+                        change.find("#item_Name").val(nameCat);
+                        change.find("a.delete").attr("href", "/admin/store/CategoryRemove" + data)
+                        table.append(change);
+                        table.sortable("refresh");
+                    }
+                }
+
+            });
+
+        });
+
+
+
+        // ask if user wants to delete a category
+        $("body").on("click", "a.delete", function () {
+
+
+            if (!confirm("Delete the Category?")) return false;
+        });
+
+
+        //Highlight and ability to sort items
+        $("table#pages tbody").sortable({
+            itens: "tr:not(.home)",
+            placeholder: "highlight",
+            update: function () {
+                var id = $("table#pages tbody").sortable("serialize");
+                var url = "/Admin/Store/CatReorder";
+                //save sorted data
+                $.post(url, id, function (data) {
+
+                });
+            }
+        });
+
+
+        var originalTxtVal; 
+        //activate the category text edit
+        $("table#pages input.text-box").dblclick(function () {
+            originalTxtVal = $(this).val();
+            $(this).attr("readonly", false);
+
+        });
+        //on enter blur text box
+        $("table#pages input.text-box").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $(this).blur();
+            }
+        });
+        //Used to make textbox readonly and saves edited data to database
+        $("table#pages input.text-box").blur(function () {
+            var currObj = $(this);
+            var jsDiv = currObj.parent().find(".jsDiv");
+            var nameCat = currObj.val();
+            var id = currObj.parent().parent().attr("id").substring(3);
+            var url = "/Admin/Store/CatUpdate";
+            if (nameCat.length < 3) {
+                alert("Name must be at least 3 characters long");
+                $(this).attr("readonly", true);
+                return false;
+            }
+            $.post(url, { nameCatNew: nameCat, id: id }, function (data) {
+                var call = data.trim();
+                alert(call);
+                if (call == "taken") {
+                    currObj.val(originalTxtVal);
+                    jsDiv.html("<span class= 'alert alert-danger'> Duplicate name, try again </span>").show();
+                } else {
+                    jsDiv.html("<span class= 'alert alert-success'> Category Updated </span>").show();
+                }
+                setTimeout(function () {
+                    jsDiv.fadeOut("fast", function () {
+                        jsDiv.html("");
+                        
+                    });
+                }, 3000);
+            }).done(function () {
+                currObj.attr("readonly", true);
+                });
+            
+        });
+
+     
+       
+    </script>
+
+}

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Store.ShoppingCartViewModel>
+
+@{
+    ViewBag.Title = "Shopping Basket";
+}
+
+<h2>Shopping Basket</h2>
+
+@if (ViewBag.CartMsg != null)
+{
+    <h4> @ViewBag.CartMsg</h4>
+
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Picture
+            </th>
+            <th>
+                Price in £
+            </th>
+            <th>
+
+            </th>
+            <th>
+                Total Price
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProdName)
+                </td>
+                <td class="quantity@(item.ProductId)">
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <img src="/Images/Uploaded/ProductImages/@item.ProductId/Thumbnails/@item.Image" />"
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a href=" #" class="delprod" data-id="@item.ProductId">Delete</a>
+                </td>
+                <td class="totprice@(item.ProductId)">
+                    £@Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="sumtotal">Total: £<span>@ViewBag.TotalPrice</span></td>
+
+
+        </tr>
+
+    </table>
+}
+
+@section Scripts {
+<script>
+    //Delete product from shopping cart
+    $("a.delprod").click(function (e) {
+        e.preventDefault();
+
+        var parentObj = $(this);
+        var productId = $(this).data("id");
+        var url = "/ShoppingCart/DelProd";
+
+        $.get(url, { productId: productId }, function (data) {
+            location.reload();
+        });
+    });
+
+
+
+    </script>
+
+}

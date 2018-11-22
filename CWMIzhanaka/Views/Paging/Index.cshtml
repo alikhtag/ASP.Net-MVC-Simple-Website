@@ -1,0 +1,9 @@
+﻿@model CWMIzhanaka.Models.ViewModels.Pages.PageViewModel
+
+@{
+    ViewBag.Title = ViewBag.pgTitle;
+    TempData["pgTitle"] = ViewBag.pgTitle;
+}
+
+@Html.Raw(Model.Body);
+

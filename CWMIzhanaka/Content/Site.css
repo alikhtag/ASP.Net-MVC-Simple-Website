@@ -22,3 +22,47 @@ select,
 textarea {
     max-width: 280px;
 }
+
+table.sorting tr:not(.home) {
+    cursor: pointer;
+}
+
+.highlight {
+    border: 2px dashed #4cff00
+}
+
+div.new-category {
+    margin-top: 25px;
+    position: relative;
+}
+
+span.cat-text {
+    display: none;
+}
+
+table.sorting.cat td {
+    padding: 20px !important;
+}
+
+.jsDiv {
+    position: absolute;
+}
+
+span.jsconfirm {
+    color: black;
+    padding: 12px;
+    position: absolute;
+    display:none;
+    background: yellow; 
+    bottom: 0; 
+}
+
+.csscart{
+    top: 5px;
+    position:relative;
+        
+}
+
+.inBlock{
+    display:inline-block !important;
+}

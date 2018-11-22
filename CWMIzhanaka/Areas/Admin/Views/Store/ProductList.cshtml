@@ -1,0 +1,104 @@
+﻿@model IEnumerable<CWMIzhanaka.Models.ViewModels.Store.ProductViewModel>
+@using PagedList.Mvc;
+@using PagedList; 
+@{
+    ViewBag.Title = "ProductList";
+}
+
+<h2>ProductList</h2>
+<select id="currCat" name=" currCat">
+    <option value="0">All</option>
+    @foreach(var catItem in ViewBag.CategoryList)
+    {
+        if(ViewBag.PickedCategory == catItem.Value)
+        {
+            <option selected ="selected" value="@catItem.Value">@catItem.Text</option>
+        }
+        else
+        {
+            <option value="@catItem.Value">@catItem.Text</option>
+        }
+    }
+
+</select>
+<p>
+    @Html.ActionLink("Create New Product", "AddNewProduct")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Product Name
+        </th>
+        <th>
+            Product Description
+        </th>
+        <th>
+            Product Category
+        </th>
+
+        <th>
+            Product Price
+        </th>
+        <th>
+            Product Image
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var product in ViewBag.OnePgOfProd)
+    {
+        <tr>
+            <td>
+                @product.Name
+            </td>
+            <td>
+                @product.Description
+            </td>
+            <td>
+                @product.CategoryName
+            </td>
+            <td>
+                $@product.Price
+            </td>
+            <td>
+                <a href="/admin/shop/ProductEdit/@product.ProductId">
+                    <img src="/Images/Uploaded/ProductImages/@product.ProductId/Thumbnails/@product.ImagePath" />
+                </a>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "ProductEdit", new { id = product.ProductId }) |
+                @Html.ActionLink("Delete", "ProductDel", new { id = product.ProductId }, new { @class = "delete" })
+            </td>
+        </tr>
+    }
+</table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePgOfProd, pg => Url.Action("ProductList", new { pg, categoryId = ViewBag.PickedCategory }))
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+        integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+        crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+
+            ///Select products from category
+
+            $("#currCat").on("change", function () {
+                var path = $(this).val();
+
+                if (path) {
+                    window.location = "/Admin/Store/ProductList?categoryId=" + path;
+                }
+                return false;
+            });
+
+            // ask if user wants to delete product
+
+            $("a.delete").click(function () {
+                if (!confirm("Delete Product?")) return false;
+            });
+
+        });
+
+        </script>
+}
